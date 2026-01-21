@@ -1907,7 +1907,9 @@ async function init() {
   applyAsideWidth(state.config.asideWidth);
   applyTimerConfig();
 
+  setHomeLoaderVisible(true);
   state.db = await loadDatabase();
+  setHomeLoaderVisible(false);
   if (!state.db) {
     renderMessage("database/lesen.json not found. Run scripts/build_database.py");
     return;
