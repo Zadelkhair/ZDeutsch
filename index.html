@@ -310,9 +310,7 @@
           <div id="header-left" class="flex items-center gap-3 shrink-0">
             <img id="brand-logo" src="logo.svg" alt="ZDeutsch" class="h-16 w-auto">
             <button id="back-btn" class="h-9 w-9 rounded-xl border border-black/10 bg-white/80 text-slate flex items-center justify-center shadow-sm">
-              <svg viewBox="0 0 24 24" class="h-4 w-4">
-                <path d="M14 6l-6 6 6 6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
-              </svg>
+              <i data-lucide="arrow-left" class="h-4 w-4" aria-hidden="true"></i>
             </button>
             <span id="return-label" class="text-xs font-display uppercase tracking-[0.2em] text-slate">Return</span>
             <div id="header-divider" class="h-6 w-px bg-black/10"></div>
@@ -331,9 +329,7 @@
               <span id="timer-value">90:00</span>
             </div>
             <button id="settings-btn" class="h-9 w-9 rounded-xl border border-black/10 bg-white/80 text-slate flex items-center justify-center shadow-sm">
-              <svg viewBox="0 0 24 24" class="h-4 w-4">
-                <path d="M12 8.5a3.5 3.5 0 1 0 0 7 3.5 3.5 0 0 0 0-7Zm8 3.5a7.9 7.9 0 0 0-.2-1.7l2-1.5-2-3.4-2.3.9a7.6 7.6 0 0 0-2.9-1.7L14 1h-4l-.6 3.6a7.6 7.6 0 0 0-2.9 1.7l-2.3-.9-2 3.4 2 1.5A7.9 7.9 0 0 0 4 12c0 .6.1 1.2.2 1.7l-2 1.5 2 3.4 2.3-.9a7.6 7.6 0 0 0 2.9 1.7L10 23h4l.6-3.6a7.6 7.6 0 0 0 2.9-1.7l2.3.9 2-3.4-2-1.5c.1-.5.2-1.1.2-1.7Z" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
-              </svg>
+              <i data-lucide="settings" class="h-4 w-4" aria-hidden="true"></i>
             </button>
           </div>
         </div>
@@ -463,15 +459,15 @@
             <h3 id="version-title" class="mt-2 text-lg font-display text-ink">Choose a version</h3>
           </div>
           <button id="version-close" class="h-9 w-9 rounded-xl border border-black/10 bg-white/80 text-slate flex items-center justify-center shadow-sm">
-            <svg viewBox="0 0 24 24" class="h-4 w-4">
-              <path d="M6 6l12 12M18 6l-12 12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
-            </svg>
+            <i data-lucide="x" class="h-4 w-4" aria-hidden="true"></i>
           </button>
         </div>
         <div id="version-options" class="mt-5 grid gap-3"></div>
       </div>
     </div>
 
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    <script src="https://unpkg.com/lucide@0.471.0/dist/umd/lucide.min.js"></script>
     <script src="app.js"></script>
   </body>
 </html>
