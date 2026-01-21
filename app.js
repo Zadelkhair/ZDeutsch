@@ -10,6 +10,7 @@ const levelList = document.getElementById("level-list");
 const sectionList = document.getElementById("section-list");
 const themeGrid = document.getElementById("theme-grid");
 const themeSearchInput = document.getElementById("theme-search");
+const homeLoader = document.getElementById("home-loader");
 const partCards = document.getElementById("part-cards");
 const timerDisplay = document.getElementById("timer-display");
 const timerValue = document.getElementById("timer-value");
@@ -33,6 +34,7 @@ const rightPanel = document.getElementById("right-panel");
 const themeTitle = document.getElementById("theme-title");
 const levelPill = document.getElementById("level-pill");
 const partLabel = document.getElementById("part-label");
+const brandLogo = document.getElementById("brand-logo");
 const headerLeft = document.getElementById("header-left");
 const headerTitle = document.getElementById("header-title");
 const headerDivider = document.getElementById("header-divider");
@@ -84,6 +86,13 @@ function createEl(tag, className, text) {
     el.textContent = text;
   }
   return el;
+}
+
+function setHomeLoaderVisible(show) {
+  if (!homeLoader) {
+    return;
+  }
+  homeLoader.classList.toggle("hidden", !show);
 }
 
 function normalize(value) {
@@ -335,6 +344,9 @@ function setView(view) {
   if (view !== "exam") {
     stopExamTimer();
   }
+  if (view !== "exam" && settingsPanel) {
+    settingsPanel.classList.add("hidden");
+  }
   state.view = view;
   if (view === "home") {
     homeView.classList.remove("hidden");
@@ -357,6 +369,12 @@ function setView(view) {
     if (headerTitle) {
       headerTitle.classList.add("hidden");
     }
+    if (brandLogo) {
+      brandLogo.classList.remove("hidden");
+    }
+    if (settingsBtn) {
+      settingsBtn.classList.add("hidden");
+    }
   } else if (view === "results") {
     homeView.classList.add("hidden");
     examView.classList.add("hidden");
@@ -374,6 +392,12 @@ function setView(view) {
     if (headerTitle) {
       headerTitle.classList.remove("hidden");
     }
+    if (brandLogo) {
+      brandLogo.classList.add("hidden");
+    }
+    if (settingsBtn) {
+      settingsBtn.classList.add("hidden");
+    }
   } else {
     homeView.classList.add("hidden");
     examView.classList.remove("hidden");
@@ -390,6 +414,12 @@ function setView(view) {
     }
     if (headerTitle) {
       headerTitle.classList.remove("hidden");
+    }
+    if (brandLogo) {
+      brandLogo.classList.add("hidden");
+    }
+    if (settingsBtn) {
+      settingsBtn.classList.remove("hidden");
     }
   }
   renderPartCards();

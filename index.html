@@ -357,7 +357,13 @@
         </div>
       </div>
 
-      <section id="home-view" class="pt-24 pb-16 px-6">
+      <section id="home-view" class="pt-24 pb-16 px-6 relative">
+        <div id="home-loader" class="hidden absolute inset-0 z-10 flex items-center justify-center">
+          <div class="rounded-3xl border border-stone-300 bg-white/95 shadow-panel px-6 py-4 flex items-center gap-3">
+            <div class="h-8 w-8 rounded-full border-2 border-azure/50 border-t-transparent animate-spin"></div>
+            <div class="text-sm text-slate">Loading exams...</div>
+          </div>
+        </div>
         <div class="w-full">
           <div class="rounded-3xl border border-stone-300 bg-white/90 shadow-panel p-8">
             <div class="flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
@@ -412,7 +418,10 @@
       <section id="result-view" class="hidden pt-24 pb-24 px-6">
         <div class="w-full">
           <div class="rounded-3xl border border-stone-300 bg-white/90 shadow-panel p-8">
-            <p class="font-display text-xs uppercase tracking-[0.3em] text-slate">Exam results</p>
+            <div class="flex items-center justify-between gap-4">
+              <p class="font-display text-xs uppercase tracking-[0.3em] text-slate">Exam results</p>
+              <img src="logo.svg" alt="ZDeutsch" class="h-8 w-auto">
+            </div>
             <h2 id="result-title" class="mt-3 text-3xl font-display">Results</h2>
             <p id="result-subtitle" class="mt-2 text-slate">Your score overview.</p>
 
