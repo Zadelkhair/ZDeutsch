@@ -242,8 +242,9 @@ function renderActivePart() {
     contentContainer.append(instruction);
   }
   const { responses } = ensurePartState(state.partKey);
-  const topicOrder = state.checkOneByOne && state.topicOrder[state.partKey] ? state.topicOrder[state.partKey] : filteredTopics.map((_, i) => i);
-  filteredTopics.forEach((topic, originalIndex) => {
+  const topicOrder = state.checkOneByOne && state.topicOrder[state.partKey] ? state.topicOrder[state.partKey] : allTopics.map((_, i) => i);
+  const topicsToIterate = state.checkOneByOne ? allTopics : filteredTopics;
+  topicsToIterate.forEach((topic, originalIndex) => {
     if (!topic.statements?.length) {
       return;
     }
@@ -288,7 +289,7 @@ function renderActivePart() {
     const checkTopicBtn = createEl(
       "button",
       "rounded-full border border-azure/40 bg-white px-4 py-2 text-[10px] font-display uppercase tracking-[0.3em] text-azure shadow-sm",
-      "Check topic"
+      "Thema prüfen"
     );
     checkTopicBtn.type = "button";
     checkTopicBtn.disabled = !topicComplete;
@@ -401,20 +402,32 @@ function getTopicKey(topic, index) {
   return `${state.partKey}-${baseId}-${index}`;
 }
 
-function renderFooterControls(topics) {
+function renderFooterControls(filteredTopics) {
   const { responses } = ensurePartState(state.partKey);
-  const allComplete = topics.length > 0 && topics.every((topic) => isTopicComplete(topic, responses));
-  const atLastTopic = topics.length ? state.activeTopicIndex >= topics.length - 1 : false;
+  const allTopics = getTopicsForPart(state.partKey);
+  const topicsToUse = state.checkOneByOne ? allTopics : filteredTopics;
+  const allComplete = topicsToUse.length > 0 && topicsToUse.every((topic) => isTopicComplete(topic, responses));
+  const atLastTopic = topicsToUse.length ? state.activeTopicIndex >= topicsToUse.length - 1 : false;
+  
+  // Get the current topic considering randomization
+  let currentTopic = null;
+  if (state.checkOneByOne && state.topicOrder[state.partKey]) {
+    const topicOrder = state.topicOrder[state.partKey];
+    const originalIndex = topicOrder[state.activeTopicIndex];
+    currentTopic = topicsToUse[originalIndex];
+  } else if (state.checkOneByOne) {
+    currentTopic = topicsToUse[state.activeTopicIndex];
+  }
   if (checkBtn) {
     checkBtn.disabled = !(allComplete && atLastTopic);
     checkBtn.classList.toggle("opacity-50", checkBtn.disabled);
     checkBtn.classList.toggle("pointer-events-none", checkBtn.disabled);
   }
   if (nextBtn) {
-    if (state.checkOneByOne && topics.length > 1) {
+    if (state.checkOneByOne && topicsToUse.length > 1) {
       nextBtn.classList.remove("hidden");
-      const nextTopicIndex = state.activeTopicIndex + 1;
-      const canAdvance = nextTopicIndex < topics.length && isTopicComplete(topics[state.activeTopicIndex], responses);
+      const isCurrentTopicComplete = currentTopic && isTopicComplete(currentTopic, responses);
+      const canAdvance = state.activeTopicIndex < topicsToUse.length - 1 && isCurrentTopicComplete;
       nextBtn.disabled = !canAdvance;
       nextBtn.classList.toggle("opacity-50", nextBtn.disabled);
       nextBtn.classList.toggle("pointer-events-none", nextBtn.disabled);
@@ -423,19 +436,20 @@ function renderFooterControls(topics) {
     }
   }
   if (prevBtn) {
-    if (state.checkOneByOne && topics.length > 1) {
+    if (state.checkOneByOne && topicsToUse.length > 1) {
       prevBtn.classList.remove("hidden");
       prevBtn.disabled = state.activeTopicIndex <= 0;
     } else {
       prevBtn.classList.add("hidden");
     }
   }
-  const totalStatements = countTotalStatements(topics);
-  const answeredStatements = countAnsweredStatements(topics, responses);
+  const totalStatements = countTotalStatements(topicsToUse);
+  const answeredStatements = countAnsweredStatements(topicsToUse, responses);
   if (progressDisplay) {
-    if (state.checkOneByOne && topics.length) {
+    if (state.checkOneByOne && topicsToUse && topicsToUse.length) {
       progressDisplay.classList.remove("hidden");
-      progressDisplay.textContent = `${answeredStatements}/${totalStatements}`;
+      const currentTopicNumber = state.activeTopicIndex + 1;
+      progressDisplay.textContent = `${currentTopicNumber}/${topicsToUse.length} Thema`;
     } else {
       progressDisplay.classList.add("hidden");
       progressDisplay.textContent = "";
@@ -504,9 +518,8 @@ function applyFontScale(factor) {
 }
 
 function goToNextTopic() {
-  const part = getPart(state.partKey);
-  const topics = getTopicsForPart(state.partKey);
-  const totalTopics = topics.length;
+  const allTopics = getTopicsForPart(state.partKey);
+  const totalTopics = allTopics.length;
   if (totalTopics === 0 || state.activeTopicIndex >= totalTopics - 1) {
     return;
   }
