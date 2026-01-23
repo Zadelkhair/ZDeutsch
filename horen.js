@@ -14,6 +14,8 @@ const settingsBtn = document.getElementById("settings-btn");
 const settingsPanel = document.getElementById("settings-panel");
 const hideAussageToggle = document.getElementById("hide-aussage-toggle");
 const progressDisplay = document.getElementById("horen-progress");
+const searchBarContainer = document.getElementById("search-bar-container");
+const searchInput = document.getElementById("horen-topic-search");
 const HIDE_AUSSAGE_KEY = "horenHideAussage";
 
 const PART_ORDER = ["teil-1", "teil-2", "teil-3"];
@@ -34,7 +36,8 @@ const state = {
   topicOrder: {},
   checkedAll: false,
   lastSummary: null,
-  hideAussage: getStoredHideAussage()
+  hideAussage: getStoredHideAussage(),
+  searchQuery: ""
 };
 
 function getStoredCheckOneByOne() {
@@ -108,6 +111,20 @@ function getTopicsForPart(partKey) {
     return [];
   }
   return part.content?.topics || [];
+}
+
+function getFilteredTopics(topics, searchQuery) {
+  if (!searchQuery || !searchQuery.trim()) {
+    return topics;
+  }
+  const query = searchQuery.toLowerCase();
+  return topics.filter((topic) => {
+    const title = (topic.title || "").toLowerCase();
+    const tag = (topic.tag || "").toLowerCase();
+    const matchesTitle = title.includes(query);
+    const matchesTag = tag.includes(query);
+    return matchesTitle || matchesTag;
+  });
 }
 
 function renderPartList() {
@@ -214,25 +231,31 @@ function renderActivePart() {
     contentContainer.innerHTML = "<p class=\"text-sm text-slate\">Teil ist noch nicht verfügbar.</p>";
     return;
   }
-  const topics = getTopicsForPart(state.partKey);
+  const allTopics = getTopicsForPart(state.partKey);
+  const filteredTopics = state.checkOneByOne ? allTopics : getFilteredTopics(allTopics, state.searchQuery);
+  if (searchBarContainer) {
+    searchBarContainer.classList.toggle("hidden", state.checkOneByOne);
+  }
   contentContainer.innerHTML = "";
   if (part.content?.instruction) {
     const instruction = createEl("p", "mb-4 rounded-2xl border border-amber/40 bg-amber/10 px-4 py-2 text-sm text-ink", part.content.instruction);
     contentContainer.append(instruction);
   }
   const { responses } = ensurePartState(state.partKey);
-  topics.forEach((topic, index) => {
+  const topicOrder = state.checkOneByOne && state.topicOrder[state.partKey] ? state.topicOrder[state.partKey] : filteredTopics.map((_, i) => i);
+  filteredTopics.forEach((topic, originalIndex) => {
     if (!topic.statements?.length) {
       return;
     }
+    const displayIndex = topicOrder.indexOf(originalIndex);
     const wrapper = createEl("article", "horen-topic");
-    if (state.checkOneByOne && index !== state.activeTopicIndex) {
+    if (state.checkOneByOne && displayIndex !== state.activeTopicIndex) {
       wrapper.classList.add("hidden");
     }
     const header = createEl("div", "flex items-center justify-between gap-3");
     header.append(
       createEl("div", "font-display text-lg text-ink", topic.title),
-      createEl("div", "text-xs uppercase tracking-[0.2em] text-slate", topic.tag || `Thema ${index + 1}`)
+      createEl("div", "text-xs uppercase tracking-[0.2em] text-slate", topic.tag || `Thema ${originalIndex + 1}`)
     );
     wrapper.append(header);
     const table = createEl("table", "horen-table mt-4 w-full");
@@ -246,11 +269,11 @@ function renderActivePart() {
       </tr>
     `;
     table.append(thead);
-    const topicKey = getTopicKey(topic, index);
+    const topicKey = getTopicKey(topic, originalIndex);
     const feedback = state.topicFeedbacks[topicKey];
     const tbody = createEl("tbody");
     topic.statements.forEach((statement) => {
-      tbody.append(renderStatementRow(state.partKey, statement, topicKey, index, Boolean(feedback)));
+      tbody.append(renderStatementRow(state.partKey, statement, topicKey, originalIndex, Boolean(feedback)));
     });
     table.append(tbody);
     wrapper.append(table);
@@ -273,7 +296,7 @@ function renderActivePart() {
       if (!isTopicComplete(topic, responses)) {
         return;
       }
-      const fb = buildTopicFeedback(state.partKey, topic, index);
+      const fb = buildTopicFeedback(state.partKey, topic, originalIndex);
       state.topicFeedbacks[topicKey] = fb;
       state.checkedAll = false;
       state.lastSummary = null;
@@ -283,7 +306,7 @@ function renderActivePart() {
     wrapper.append(topicControls);
     contentContainer.append(wrapper);
   });
-  renderFooterControls(topics);
+  renderFooterControls(filteredTopics);
   renderSummary();
   if (typeof refreshIcons === "function") {
     refreshIcons();
@@ -462,6 +485,16 @@ function renderSummary() {
   summarySection.append(header, table);
 }
 
+function shuffleTopics(partKey) {
+  const topics = getTopicsForPart(partKey);
+  const indices = topics.map((_, i) => i);
+  for (let i = indices.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [indices[i], indices[j]] = [indices[j], indices[i]];
+  }
+  return indices;
+}
+
 function applyFontScale(factor) {
   if (!fontSizeInput || !fontSizeValue) {
     return;
@@ -527,6 +560,9 @@ function handleCheckClick() {
 }
 
 function notch() {
+  if (state.checkOneByOne && !state.topicOrder[state.partKey]) {
+    state.topicOrder[state.partKey] = shuffleTopics(state.partKey);
+  }
   renderPartList();
   renderActivePart();
   applyHeaderInfo();
@@ -549,11 +585,21 @@ if (prevBtn) {
     }
   });
 }
+if (searchInput) {
+  searchInput.addEventListener("input", () => {
+    state.searchQuery = searchInput.value;
+    renderActivePart();
+  });
+}
 if (checkToggle) {
   checkToggle.checked = state.checkOneByOne;
   checkToggle.addEventListener("change", () => {
     persistCheckOneByOne(checkToggle.checked);
     state.activeTopicIndex = 0;
+    state.searchQuery = "";
+    if (searchInput) {
+      searchInput.value = "";
+    }
     state.topicOrder = checkToggle.checked ? { ...state.topicOrder, [state.partKey]: shuffleTopics(state.partKey) } : {};
     state.topicFeedbacks = {};
     state.checkedAll = false;
