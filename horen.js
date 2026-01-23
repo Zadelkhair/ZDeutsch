@@ -40,6 +40,12 @@ const state = {
   searchQuery: ""
 };
 
+function refreshIcons() {
+  if (typeof window.lucide !== "undefined" && typeof window.lucide.createIcons === "function") {
+    window.lucide.createIcons();
+  }
+}
+
 function getStoredCheckOneByOne() {
   return window.localStorage.getItem("horenCheckOneByOne") === "true";
 }
@@ -259,7 +265,8 @@ function renderActivePart() {
       createEl("div", "text-xs uppercase tracking-[0.2em] text-slate", topic.tag || `Thema ${originalIndex + 1}`)
     );
     wrapper.append(header);
-    const table = createEl("table", "horen-table mt-4 w-full");
+    const tableWrapper = createEl("div", "horen-table-wrapper");
+    const table = createEl("table", "horen-table");
     const thead = createEl("thead");
     thead.innerHTML = `
       <tr>
@@ -277,7 +284,8 @@ function renderActivePart() {
       tbody.append(renderStatementRow(state.partKey, statement, topicKey, originalIndex, Boolean(feedback)));
     });
     table.append(tbody);
-    wrapper.append(table);
+    tableWrapper.append(table);
+    wrapper.append(tableWrapper);
     if (feedback) {
       wrapper.append(renderTopicFeedback(feedback));
     }

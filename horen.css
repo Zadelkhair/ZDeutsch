@@ -7,8 +7,16 @@
   box-shadow: 0 12px 30px rgba(15, 23, 42, 0.08);
 }
 
+.horen-table-wrapper {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  border-radius: 1rem;
+  margin: 1rem 0;
+}
+
 .horen-table {
   width: 100%;
+  min-width: 400px;
   border-collapse: collapse;
   font-size: 0.95rem;
 }
@@ -18,6 +26,7 @@
   border: 1px solid rgba(15, 23, 42, 0.12);
   padding: 0.45rem 0.75rem;
   text-align: left;
+  white-space: nowrap;
 }
 
 .horen-table th {
@@ -26,6 +35,17 @@
   font-size: 0.8rem;
   letter-spacing: 0.12em;
   text-transform: uppercase;
+}
+
+@media (max-width: 767px) {
+  .horen-table th,
+  .horen-table td {
+    padding: 0.35rem 0.5rem;
+    font-size: 0.85rem;
+  }
+  .horen-table th {
+    font-size: 0.7rem;
+  }
 }
 
 .horen-topic {
@@ -85,4 +105,34 @@
 
 #horen-footer {
   z-index: 50;
+}
+
+@media (max-width: 767px) {
+  #horen-footer {
+    height: auto;
+    min-height: 56px;
+    padding: 8px 12px;
+  }
+  #horen-footer .w-full {
+    flex-wrap: wrap;
+  }
+  #horen-footer .flex.items-center.gap-3 {
+    width: 100%;
+  }
+  #horen-footer .flex.items-center.gap-2 {
+    width: 100%;
+    gap: 6px;
+  }
+  #horen-footer img {
+    height: 24px;
+  }
+  #horen-progress {
+    font-size: 8px;
+  }
+  #horen-footer button {
+    padding: 6px 12px;
+    font-size: 8px;
+    min-width: auto;
+    flex: 1;
+  }
 }

@@ -238,13 +238,19 @@ body.theme-body {
   }
 }
 
-/* Header responsive tweaks for small screens */
+/* Header responsive tweaks for all pages on small screens */
 @media (max-width: 767px) {
   header {
     height: 56px;
+    padding-left: 8px !important;
+    padding-right: 8px !important;
   }
-  #header-left img#brand-logo {
-    display: none;
+  #header-left {
+    gap: 8px !important;
+  }
+  #header-left img#brand-logo,
+  img#brand-logo {
+    display: none !important;
   }
   #return-label {
     display: none;
@@ -252,13 +258,26 @@ body.theme-body {
   #header-divider {
     display: none;
   }
-  #header-title h1#theme-title {
-    font-size: 0.95rem;
+  #header-title h1#theme-title,
+  #theme-title {
+    font-size: 0.9rem;
   }
   #level-pill {
     display: none;
   }
+  /* Part cards on mobile: display in single row with horizontal scroll */
   #part-cards {
-    padding-left: 8px;
+    flex-wrap: nowrap !important;
+    gap: 6px !important;
+    overflow-x: auto;
+    overflow-y: hidden;
+    -webkit-overflow-scrolling: touch;
+  }
+  #part-cards button {
+    font-size: 7px;
+    padding: 6px 8px;
+    min-width: 75px;
+    height: auto;
+    flex-shrink: 0;
   }
 }
