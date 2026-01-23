@@ -220,3 +220,45 @@ body.theme-body {
   background: rgba(26, 26, 26, 0.18);
   border-radius: 999px;
 }
+
+/* Mobile aside animations */
+#right-panel {
+  transition: transform 220ms cubic-bezier(.2,.8,.2,1), opacity 200ms linear;
+  will-change: transform, opacity;
+}
+
+@media (max-width: 767px) {
+  #right-panel.hidden {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+  #right-panel.fixed {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+/* Header responsive tweaks for small screens */
+@media (max-width: 767px) {
+  header {
+    height: 56px;
+  }
+  #header-left img#brand-logo {
+    display: none;
+  }
+  #return-label {
+    display: none;
+  }
+  #header-divider {
+    display: none;
+  }
+  #header-title h1#theme-title {
+    font-size: 0.95rem;
+  }
+  #level-pill {
+    display: none;
+  }
+  #part-cards {
+    padding-left: 8px;
+  }
+}
