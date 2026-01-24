@@ -66,15 +66,24 @@ html {
   font-size: calc(10px * var(--font-scale));
 }
 
-@media (min-width: 1024px) {
-  #exam-grid {
-    grid-template-columns: minmax(0, calc(100% - var(--aside-width))) minmax(0, var(--aside-width));
-  }
-}
-
 #left-panel p {
   text-align: justify;
   text-justify: inter-word;
+}
+
+@media (min-width: 1024px) {
+  #exam-view {
+    min-height: calc(100vh - 160px);
+  }
+  #exam-grid {
+    height: calc(100vh - 160px);
+    grid-template-columns: minmax(0, calc(100% - var(--aside-width))) minmax(0, var(--aside-width));
+  }
+  #left-panel,
+  #right-panel {
+    height: 100%;
+    min-height: 0;
+  }
 }
 
 body.theme-body {

@@ -74,14 +74,14 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="theme.css">
   </head>
-  <body class="theme-body font-body min-h-screen">
+  <body class="theme-body font-body h-screen overflow-hidden">
     <div class="fixed inset-0">
       <div class="absolute inset-0 flag-glow-top"></div>
       <div class="absolute inset-0 flag-glow-bottom"></div>
       <div class="absolute inset-0 grid-overlay"></div>
     </div>
 
-    <div class="relative min-h-screen">
+    <div class="relative flex flex-col h-screen">
       <header class="fixed top-0 left-0 right-0 h-16 border-b border-black/10 bg-white/90 backdrop-blur-md shadow-sm z-40">
         <div class="w-full h-full px-6 flex items-center justify-between gap-4">
           <div id="header-left" class="flex items-center gap-3 shrink-0">
@@ -135,9 +135,9 @@
 
       <main id="exam-view" class="pt-20 pb-20 px-6">
         <div class="w-full">
-          <div id="exam-grid" class="grid gap-6 h-[calc(100vh-160px)] grid-cols-1 md:grid-cols-3">
-            <section id="left-panel" class="rounded-3xl border border-stone-300 bg-white/90 shadow-panel p-6 overflow-y-auto md:col-span-2"></section>
-            <aside id="right-panel" role="complementary" aria-hidden="true" class="rounded-3xl border border-stone-300 bg-white/90 shadow-panel p-6 overflow-y-auto hidden md:block md:col-span-1"></aside>
+          <div id="exam-grid" class="grid gap-6 h-[calc(100vh-160px)]">
+            <section id="left-panel" class="rounded-3xl border border-stone-300 bg-white/90 shadow-panel p-6 overflow-y-auto"></section>
+            <aside id="right-panel" role="complementary" class="rounded-3xl border border-stone-300 bg-white/90 shadow-panel p-6 overflow-y-auto"></aside>
           </div>
         </div>
       </main>

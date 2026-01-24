@@ -36,9 +36,6 @@ const asideOverlay = document.getElementById("aside-overlay");
 if (asideToggle) {
   asideToggle.setAttribute("aria-expanded", "false");
 }
-if (rightPanel) {
-  rightPanel.setAttribute("aria-hidden", "true");
-}
 
 const PART_LABELS = {
   "teil-1": "Lesen Teil 1",
