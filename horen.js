@@ -13,6 +13,7 @@ const fontSizeValue = document.getElementById("font-size-value");
 const settingsBtn = document.getElementById("settings-btn");
 const settingsPanel = document.getElementById("settings-panel");
 const hideAussageToggle = document.getElementById("hide-aussage-toggle");
+const hideAussageShortcutBtn = document.getElementById("hide-aussage-shortcut");
 const progressDisplay = document.getElementById("horen-progress");
 const searchBarContainer = document.getElementById("search-bar-container");
 const searchInput = document.getElementById("horen-topic-search");
@@ -56,12 +57,37 @@ function persistCheckOneByOne(value) {
 }
 
 function getStoredHideAussage() {
-  return window.localStorage.getItem(HIDE_AUSSAGE_KEY) === "true";
+  const stored = window.localStorage.getItem(HIDE_AUSSAGE_KEY);
+  if (stored === null) {
+    return true;
+  }
+  return stored === "true";
 }
 
 function persistHideAussage(value) {
   state.hideAussage = value;
   window.localStorage.setItem(HIDE_AUSSAGE_KEY, value ? "true" : "false");
+}
+
+function syncHideAussageControls() {
+  if (hideAussageToggle) {
+    hideAussageToggle.checked = state.hideAussage;
+  }
+  if (hideAussageShortcutBtn) {
+    hideAussageShortcutBtn.innerHTML = "";
+    const iconName = state.hideAussage ? "eye" : "eye-off";
+    const label = state.hideAussage ? "Aussagen einblenden" : "Aussagen ausblenden";
+    hideAussageShortcutBtn.append(
+      makeLucideIcon(iconName, "h-4 w-4"),
+      createEl("span", "whitespace-nowrap text-[10px] font-display uppercase tracking-[0.2em]", label)
+    );
+  }
+}
+
+function setHideAussage(value) {
+  persistHideAussage(Boolean(value));
+  syncHideAussageControls();
+  renderActivePart();
 }
 
 function getLevelEntry() {
@@ -260,10 +286,34 @@ function renderActivePart() {
       wrapper.classList.add("hidden");
     }
     const header = createEl("div", "flex items-center justify-between gap-3");
-    header.append(
+    const titleDiv = createEl("div");
+    titleDiv.append(
       createEl("div", "font-display text-lg text-ink", topic.title),
       createEl("div", "text-xs uppercase tracking-[0.2em] text-slate", topic.tag || `Thema ${originalIndex + 1}`)
     );
+    const topicAussageBtn = createEl(
+      "button",
+      "hide-aussage-topic-btn flex items-center justify-center h-8 w-8 rounded-full border border-azure/40 bg-white hover:bg-azure/5 transition-colors md:px-3 md:py-2 md:w-auto md:gap-2",
+      undefined
+    );
+    topicAussageBtn.type = "button";
+    const updateTopicAussageBtn = () => {
+      topicAussageBtn.innerHTML = "";
+      const iconName = state.hideAussage ? "eye" : "eye-off";
+      topicAussageBtn.append(makeLucideIcon(iconName, "h-4 w-4 text-azure"));
+      // Only add label on mobile
+      const mediaQuery = window.matchMedia("(max-width: 767px)");
+      if (mediaQuery.matches) {
+        const label = state.hideAussage ? "Aussagen anzeigen" : "Aussagen verstecken";
+        topicAussageBtn.append(createEl("span", "whitespace-nowrap text-[9px] font-display uppercase tracking-[0.2em] text-azure", label));
+      }
+      refreshIcons();
+    };
+    updateTopicAussageBtn();
+    topicAussageBtn.addEventListener("click", () => {
+      setHideAussage(!state.hideAussage);
+    });
+    header.append(titleDiv, topicAussageBtn);
     wrapper.append(header);
     const tableWrapper = createEl("div", "horen-table-wrapper");
     const table = createEl("table", "horen-table");
@@ -585,11 +635,9 @@ function notch() {
     state.topicOrder[state.partKey] = shuffleTopics(state.partKey);
   }
   renderPartList();
+  syncHideAussageControls();
   renderActivePart();
   applyHeaderInfo();
-  if (typeof refreshIcons === "function") {
-    refreshIcons();
-  }
 }
 
 if (checkBtn) {
@@ -629,10 +677,13 @@ if (checkToggle) {
   });
 }
 if (hideAussageToggle) {
-  hideAussageToggle.checked = state.hideAussage;
   hideAussageToggle.addEventListener("change", () => {
-    persistHideAussage(hideAussageToggle.checked);
-    renderActivePart();
+    setHideAussage(hideAussageToggle.checked);
+  });
+}
+if (hideAussageShortcutBtn) {
+  hideAussageShortcutBtn.addEventListener("click", () => {
+    setHideAussage(!state.hideAussage);
   });
 }
 if (fontSizeInput) {
