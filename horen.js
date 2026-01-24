@@ -293,7 +293,7 @@ function renderActivePart() {
     );
     const topicAussageBtn = createEl(
       "button",
-      "hide-aussage-topic-btn flex items-center justify-center h-8 w-8 rounded-full border border-azure/40 bg-white hover:bg-azure/5 transition-colors md:px-3 md:py-2 md:w-auto md:gap-2",
+      "hide-aussage-topic-btn flex items-center justify-center h-8 w-8 rounded-full border border-azure/40 bg-white hover:bg-azure/5 transition-colors",
       undefined
     );
     topicAussageBtn.type = "button";
@@ -301,12 +301,6 @@ function renderActivePart() {
       topicAussageBtn.innerHTML = "";
       const iconName = state.hideAussage ? "eye" : "eye-off";
       topicAussageBtn.append(makeLucideIcon(iconName, "h-4 w-4 text-azure"));
-      // Only add label on mobile
-      const mediaQuery = window.matchMedia("(max-width: 767px)");
-      if (mediaQuery.matches) {
-        const label = state.hideAussage ? "Aussagen anzeigen" : "Aussagen verstecken";
-        topicAussageBtn.append(createEl("span", "whitespace-nowrap text-[9px] font-display uppercase tracking-[0.2em] text-azure", label));
-      }
       refreshIcons();
     };
     updateTopicAussageBtn();

@@ -119,17 +119,17 @@ header {
   padding-bottom: 1rem;
 }
 
+@media (max-width: 767px) {
+  header {
+    overflow: visible;
+  }
+}
+
 .hide-aussage-topic-btn {
   flex-shrink: 0;
   display: flex;
   align-items: center;
   justify-content: center;
-}
-
-@media (min-width: 768px) {
-  .hide-aussage-topic-btn {
-    padding: 0.5rem 0.75rem;
-  }
 }
 
 #horen-footer {
