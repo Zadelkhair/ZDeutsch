@@ -964,7 +964,7 @@ function renderLesenTeil3(content) {
   });
 
   leftPanel.append(createEl("h2", "font-display text-lg", "Anzeigen"));
-  const adsGrid = createEl("div", "mt-4 grid grid-cols-2 gap-3");
+  const adsGrid = createEl("div", "mt-4 grid grid-cols-1 md:grid-cols-2 gap-3");
   (content.ads || []).forEach((ad) => {
     const selected = responses[active.situationId];
     const correct = correctMap.get(active.situationId);
